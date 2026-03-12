@@ -5,6 +5,12 @@ import UseState from "../src/playground/components/useState";
 import UseEffect from "./playground/components/useEffect";
 import { UserContext } from "./playground/context/userContext";
 import UseContext from "./playground/components/usecontext";
+import UseReducer from "./playground/components/useReducer";
+import UseRef from "./playground/components/useRef";
+import UseMemo from "./playground/components/useMemo";
+import UseCallback from "./playground/components/useCallback";
+import UseLayoutEffect from "./playground/components/useLayoutEffect";
+import UseImperativeHandle from "./playground/components/useImperativeHandle";
 
 
 function App() {
@@ -19,12 +25,12 @@ function App() {
         <Route path="/useeffect" element={<UseEffect/>} />
         <Route path="/" element={<HomeHooks/>} />
         <Route path="/usecontext" element={<UseContext/>} />
-       {/* <Route path="/usereducer" element={<UseReducerExample />} />
-        <Route path="/useref" element={<UseRefExample />} />
-        <Route path="/usememo" element={<UseMemoExample />} />
-        <Route path="/usecallback" element={<UseCallbackExample />} />
-        <Route path="/uselayout" element={<UseLayoutEffectExample />} />
-        <Route path="/useimperative" element={<UseImperativeHandleExample />} />*/}
+        <Route path="/usereducer" element={<UseReducer />} />
+       <Route path="/useref" element={<UseRef />} />
+         <Route path="/usememo" element={<UseMemo />} />
+        <Route path="/usecallback" element={<UseCallback />} />
+       <Route path="/uselayout" element={<UseLayoutEffect />} />
+        <Route path="/useimperative" element={<UseImperativeHandle/>} />
 
       </Routes>
     </BrowserRouter>
