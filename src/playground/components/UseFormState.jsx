@@ -1,26 +1,22 @@
-import { useFormStatus } from "react-dom";
+import { useFormState } from "react-dom";
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <button type="submit">
-      {pending ? "Enviando..." : "Enviar"}
-    </button>
-  );
+async function submitForm(prevState, formData) {
+  const name = formData.get("name");
+  return { message: `Hola ${name}` };
 }
 
-function UseFormStatus() {
-  return (
-    <div>
-      <h2>Ejemplo useFormStatus</h2>
+export default function UseFormState() {
+  const [state, formAction] = useFormState(submitForm, { message: "" });
 
-      <form>
-        <input type="text" placeholder="Nombre" />
-        <SubmitButton />
-      </form>
-    </div>
+  return (
+    <form action={formAction}>
+      <h2>useFormState</h2>
+
+      <input name="name" placeholder="Nombre" />
+
+      <button type="submit">Enviar</button>
+
+      <p>{state.message}</p>
+    </form>
   );
 }
-
-export default UseFormStatus;

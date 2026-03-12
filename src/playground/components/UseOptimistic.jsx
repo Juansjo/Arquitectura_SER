@@ -9,7 +9,7 @@ export default function UseOptimistic() {
   );
 
   const addComment = () => {
-    const text = "Nuevo comentario";
+    const text = { message: "Nuevo comentario", pending: true };
     addOptimistic(text);
 
     setTimeout(() => {
@@ -23,8 +23,10 @@ export default function UseOptimistic() {
       <button onClick={addComment}>Agregar</button>
 
       {optimisticComments.map((c, i) => (
-        <p key={i}>{c}</p>
-      ))}
+  <p key={i}>
+    {c.message} {c.pending && "(enviando...)"}
+  </p>
+))}
     </div>
   );
 }
