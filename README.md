@@ -1,47 +1,73 @@
-# Playground de Hooks en React
+# React + TypeScript + Vite
 
-## Integrantes
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-* Juan José Pérez Gómez - 191923
+Currently, two official plugins are available:
 
-* Juan Diego Arevalo Arevalo - 191983
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
----
+## React Compiler
 
-## Explicación del código de los Hooks
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-### useState
+## Expanding the ESLint configuration
 
-En este componente, se utiliza `useState` para crear una variable de estado llamada `count`. Esta variable guarda el valor del contador. Se actualiza cuando el usuario presiona los botones para aumentar o disminuir el valor.
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-### useEffect
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-Aquí se usa `useEffect` para ejecutar una función cada vez que cambia el valor del contador. Dentro del efecto, se actualiza el título del navegador con `document.title`. Esto muestra cómo ejecutar código cuando cambia el estado del componente.
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-### useContext
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
 
-Se crea un contexto llamado `UserContext`. Este contexto comparte información entre componentes. El componente usa `useContext` para acceder al valor proporcionado por el `Provider` y mostrarlo en pantalla.
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-### useReducer
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-Se define una función `reducer` que controla cómo cambia el estado según la acción enviada. Luego, `useReducer` maneja el estado del contador con acciones como `increment` y `decrement`.
-
-### useRef
-
-En este componente, se crea una referencia con `useRef` que se conecta a un elemento `input`. Cuando se presiona el botón, se accede al elemento con `ref.current` y se ejecuta el método `focus()`. Esto coloca el cursor en el campo de texto.
-
-### useMemo
-
-Se utiliza `useMemo` para memorizar el resultado de un cálculo basado en una variable de estado. El valor solo se vuelve a calcular cuando cambia la dependencia especificada. Esto evita ejecuciones innecesarias del cálculo.
-
-### useCallback
-
-Aquí se utiliza `useCallback` para memorizar una función que incrementa el contador. Esto evita que la función se cree de nuevo en cada renderizado del componente. Es útil cuando se pasan funciones a componentes hijos.
-
-### useLayoutEffect
-
-Se utiliza `useLayoutEffect` para ejecutar código justo después de que React hace cambios en el DOM. Esto sucede antes de que el navegador muestre los cambios en pantalla. En el ejemplo, se modifica el estilo de un elemento con una referencia.
-
-### useImperativeHandle
-
-En este ejemplo, se utiliza `useImperativeHandle` con `forwardRef`. Esto permite que un componente padre ejecute una función definida dentro de un componente hijo a través de una referencia.
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
