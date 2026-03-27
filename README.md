@@ -1,73 +1,45 @@
-# React + TypeScript + Vite
+# 🔐 Sistema de Autenticación - React + Firebase
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación de login con React, TypeScript y Firebase que implementa autenticación con Google, GitHub, Facebook y Email/Password.
 
-Currently, two official plugins are available:
+##Tecnologías
+- React + TypeScript + Vite
+- Firebase Auth + Firestore
+- React Router DOM
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+##Páginas
 
-## React Compiler
+### LoginPage
+Formulario de inicio de sesión con email/contraseña y botones para autenticación social (Google, GitHub, Facebook). Incluye enlace a recuperación de contraseña y registro.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### RegisterPage
+Registro de nuevos usuarios con validaciones:
+- Nombre obligatorio
+- Email válido
+- Contraseña mínima 6 caracteres
+- Confirmación de contraseña
 
-## Expanding the ESLint configuration
+### ForgotPage
+Recuperación de contraseña. El usuario ingresa su email y recibe un enlace para restablecerla.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### ResetPage
+Restablecimiento de contraseña. Valida el código de la URL y permite establecer una nueva contraseña.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🔑 Métodos de Autenticación
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+| Método | Configuración |
+|--------|---------------|
+| **Google** | Habilitar en Firebase Console |
+| **GitHub** | Crear OAuth App → Callback: `https://tu-proyecto.firebaseapp.com/__/auth/handler` |
+| **Facebook** | Crear app en Facebook Developers → Callback: misma URL |
+| **Email/Password** | Habilitar en Firebase Console |
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🛠️ Instalación
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+```bash
+git clone https://github.com/Juansjo/Arquitectura_SER.git
+cd Arquitectura_SER
+npm install
+npm run dev
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Juan Jose Perez Gomez 191923
