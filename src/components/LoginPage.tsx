@@ -6,7 +6,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { User } from 'firebase/auth';
 import type { FirebaseError, ModalData } from '../types';
-import './AuthPages.css';
+import '../components/AuthPages.css'
 import { registerLogin } from '../services/sessionServices';
 
 interface LoginFormData {
@@ -18,7 +18,10 @@ export interface SessionLog {
   userId: string;
   userName: string | null;
   userEmail: string | null;
-  status: 'active' | 'closed';
+  loginTime: Date;
+  logoutTime?: Date | null;
+  sessionDuration?: number; // en segundos
+  authMethod: 'email' | 'google' | 'github' | 'facebook';
   userPhotoURL?: string | null;
 }
 
@@ -51,7 +54,8 @@ const LoginPage = () => {
       uid: user.uid,
       displayName: user.displayName,
       email: user.email,
-      provider: provider
+      provider: provider,
+      photoUrl: user.photoURL
     });
     
     
@@ -66,7 +70,16 @@ const LoginPage = () => {
       provider: provider
     }, { merge: true });
     
+    // REGISTRAR INICIO DE SESIÓN
+    const authMethod = provider === 'email' ? 'email' : provider.toLowerCase() as SessionLog['authMethod'];
+    await registerLogin(user, authMethod);
     
+    console.log(' Usuario guardado correctamente');
+  } catch (err) {
+    console.error('Error guardando usuario:', err);
+  }
+};
+
   const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
@@ -131,6 +144,8 @@ const LoginPage = () => {
         email: result.user.email || '',
         provider: providerName
       }
+
+  
     });
     setShowModal(true);
     
@@ -138,12 +153,16 @@ const LoginPage = () => {
       setShowModal(false);
       navigate('/');
     }, 2000);
+
+    
     
   } catch (err) {
     const error = err as FirebaseError;
     console.error('Error completo de autenticación:', error);
     console.error('Código de error:', error.code);
     console.error('Mensaje:', error.message);
+
+    
     
     // Manejo específico de errores de GitHub
     if (error.code === 'auth/account-exists-with-different-credential') {

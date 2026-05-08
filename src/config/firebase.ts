@@ -22,8 +22,8 @@ const firebaseConfig = {
 
 
 if (!firebaseConfig.projectId || firebaseConfig.projectId === "aosparcial") {
-  console.error("❌ ERROR: No Se encuentra la configuracion de Firebase o es incorrecta");
-
+  console.error("❌ ERROR: Firebase configuration is missing or incorrect");
+  console.error("Please update firebaseConfig in src/config/firebase.ts with your project details");
 }
 
 const app = initializeApp(firebaseConfig);
@@ -32,6 +32,8 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 
 export const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('profile'); 
+googleProvider.addScope('email');   
 export const facebookProvider = new FacebookAuthProvider();
 export const githubProvider = new GithubAuthProvider();
 

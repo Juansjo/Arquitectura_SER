@@ -100,7 +100,7 @@ const RegisterPage = () => {
     await setDoc(doc(db, 'users', userCredential.user.uid), {
       uid: userCredential.user.uid,
       name: formData.name,
-      displayName: formData.name, // Asegurar que guardamos displayName
+      displayName: formData.name,
       email: formData.email,
       createdAt: new Date(),
       role: 'user'

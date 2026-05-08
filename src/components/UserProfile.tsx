@@ -15,6 +15,7 @@ interface UserData {
   displayName?: string;
   email?: string;
   uid?: string;
+  photoUrl?: string; 
 }
 
 const UserProfile = ({ user, onLogout }: UserProfileProps) => {

@@ -36,7 +36,7 @@ export interface UserData {
   createdAt?: Date;
 }
 
-/
+
 export interface SessionLog {
   id?: string;
   userId: string;
@@ -45,14 +45,7 @@ export interface SessionLog {
   loginTime: Date;
   logoutTime?: Date | null;
   sessionDuration?: number;
-  authMethod: 'email' | 'google' | 'github' | 'facebook';
-  status: 'active' | 'closed';
   userPhotoURL?: string | null;
 }
 
-//TIPO PARA LOS FILTROS
-export interface SessionFilters {
-  searchTerm?: string;
-  authMethod?: string;
-  status?: string;
-}
+

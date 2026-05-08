@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { confirmPasswordReset } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import type { FirebaseError, ModalData } from '../types';
-import '../components/AuthPages.css';
+import './AuthPages.css';
 
 const ResetPage = () => {
   const navigate = useNavigate();
