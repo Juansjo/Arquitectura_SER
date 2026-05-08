@@ -121,7 +121,9 @@ export const getSessionsHistory = async (
       collection(db, SESSIONS_COLLECTION),
       orderBy('loginTime', 'desc')
     );
-  
+    
+    
+    
     
     // Paginación
     const paginatedSessions = sessions.slice(0, pageSize);
@@ -158,4 +160,4 @@ export const getAllSessions = async (): Promise<SessionLog[]> => {
     console.error('Error obteniendo sesiones:', error);
     return [];
   }
-}; 
+};
