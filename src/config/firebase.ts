@@ -9,7 +9,7 @@ import {
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
-// Reemplaza con TU configuración de Firebase
+
 const firebaseConfig = {
  apiKey: "AIzaSyDMy8f5IUJCgK3rzZyqZUUzZZ85CF7eyfM",
   authDomain: "aosparcial.firebaseapp.com",
@@ -20,8 +20,8 @@ const firebaseConfig = {
   measurementId: "G-E4E5KH11J6"
 };
 
-// Verificar que la configuración existe
-if (!firebaseConfig.projectId || firebaseConfig.projectId === "tu-proyecto-id") {
+
+if (!firebaseConfig.projectId || firebaseConfig.projectId === "aosparcial") {
   console.error("❌ ERROR: Firebase configuration is missing or incorrect");
   console.error("Please update firebaseConfig in src/config/firebase.ts with your project details");
 }
@@ -32,6 +32,8 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 
 export const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('profile'); 
+googleProvider.addScope('email');   
 export const facebookProvider = new FacebookAuthProvider();
 export const githubProvider = new GithubAuthProvider();
 

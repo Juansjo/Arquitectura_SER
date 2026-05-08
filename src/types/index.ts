@@ -35,3 +35,17 @@ export interface UserData {
   role?: string;
   createdAt?: Date;
 }
+
+
+export interface SessionLog {
+  id?: string;
+  userId: string;
+  userName: string | null;
+  userEmail: string | null;
+  loginTime: Date;
+  logoutTime?: Date | null;
+  sessionDuration?: number;
+  userPhotoURL?: string | null;
+}
+
+

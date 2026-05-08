@@ -1,5 +1,5 @@
 import type { User } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
@@ -15,10 +15,10 @@ interface UserData {
   displayName?: string;
   email?: string;
   uid?: string;
+  photoUrl?: string; 
 }
 
 const UserProfile = ({ user, onLogout }: UserProfileProps) => {
-  const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -36,7 +36,6 @@ const UserProfile = ({ user, onLogout }: UserProfileProps) => {
             uid: user.uid
           });
         } else {
-          // Si no hay datos en Firestore, usar los de Auth
           setUserData({
             name: user.displayName ?? undefined,
             displayName: user.displayName ?? undefined,
@@ -62,7 +61,6 @@ const UserProfile = ({ user, onLogout }: UserProfileProps) => {
 
   const handleLogout = async () => {
     await onLogout();
-    navigate('/login');
   };
 
   if (loading) {
@@ -75,7 +73,6 @@ const UserProfile = ({ user, onLogout }: UserProfileProps) => {
     );
   }
 
-  // Determinar el nombre a mostrar
   const displayName = userData?.name || userData?.displayName || user.displayName || user.email?.split('@')[0] || 'Usuario';
 
   return (
@@ -94,6 +91,9 @@ const UserProfile = ({ user, onLogout }: UserProfileProps) => {
           <p><strong>Email:</strong> {user.email || 'No disponible'}</p>
           <p><strong>UID:</strong> {user.uid}</p>
         </div>
+        <Link to="/sessions" className="sessions-button">
+          📊 Ver registro de sesiones
+        </Link>
         <button onClick={handleLogout} className="logout-button">
           Cerrar Sesión
         </button>
