@@ -86,7 +86,20 @@ const UserProfile = ({ user, onLogout }: UserProfileProps) => {
             className="profile-image"
           />
         )}
-        }
-        
+        <div className="user-info">
+          <p><strong>Nombre:</strong> {displayName}</p>
+          <p><strong>Email:</strong> {user.email || 'No disponible'}</p>
+          <p><strong>UID:</strong> {user.uid}</p>
+        </div>
+        <Link to="/sessions" className="sessions-button">
+          📊 Ver registro de sesiones
+        </Link>
+        <button onClick={handleLogout} className="logout-button">
+          Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export default UserProfile;
