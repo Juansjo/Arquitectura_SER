@@ -72,9 +72,9 @@ const RegisterPage = () => {
     }
   };
 
-  // ============================================
-  // OPCIÓN 1: REGISTRO REAL CON FIREBASE
-  // ============================================
+  
+  // Registro con Firebase
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
@@ -149,9 +149,8 @@ const RegisterPage = () => {
     }
   };
 
-  // ============================================
-  // OPCIÓN 2: REGISTRO DEMO (SIMULADO)
-  // ============================================
+  //Registro demo
+ 
   const handleDemoRegister = () => {
     // Validar el formulario igual que en registro real
     if (!validateForm()) return;
