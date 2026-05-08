@@ -122,6 +122,23 @@ export const getSessionsHistory = async (
       orderBy('loginTime', 'desc')
     );
     
+    const querySnapshot = await getDocs(sessionsQuery);
+    
+    let sessions: SessionLog[] = querySnapshot.docs.map(doc => {
+      const data = doc.data() as FirestoreSessionData;
+      return {
+        id: doc.id,
+        userId: data.userId,
+        userName: data.userName,
+        userEmail: data.userEmail,
+        loginTime: data.loginTime.toDate(),
+        logoutTime: data.logoutTime?.toDate(),
+        sessionDuration: data.sessionDuration,
+        authMethod: data.authMethod as SessionLog['authMethod'],
+        status: data.status as SessionLog['status'],
+        userPhotoURL: data.userPhotoURL
+      };
+    });
     
     
     
