@@ -20,41 +20,7 @@ interface UserData {
 
 const UserProfile = ({ user, onLogout }: UserProfileProps) => {
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      setLoading(true);
-      try {
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          setUserData({
-            name: data.name ?? data.displayName ?? user.displayName ?? undefined,
-            displayName: data.displayName ?? user.displayName ?? undefined,
-            email: data.email ?? user.email ?? undefined,
-            uid: user.uid
-          });
-        } else {
-          setUserData({
-            name: user.displayName ?? undefined,
-            displayName: user.displayName ?? undefined,
-            email: user.email ?? undefined,
-            uid: user.uid
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        setUserData({
-          name: user.displayName ?? undefined,
-          displayName: user.displayName ?? undefined,
-          email: user.email ?? undefined,
-          uid: user.uid
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
+  const [lo
 
     fetchUserData();
   }, [user]);
