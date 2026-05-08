@@ -104,15 +104,6 @@ const SessionsPage = () => {
         </button>
       </div>
 
-      <div className="filters-bar">
-        <div className="search-box">
-          <input
-            type="text"
-            placeholder="🔍 Buscar por nombre o email..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
 
         <div className="filter-group">
           <label>Método:</label>
