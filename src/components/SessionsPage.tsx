@@ -104,6 +104,15 @@ const SessionsPage = () => {
         </button>
       </div>
 
+      <div className="filters-bar">
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="🔍 Buscar por nombre o email..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
 
         <div className="filter-group">
           <label>Método:</label>
@@ -113,15 +122,6 @@ const SessionsPage = () => {
             <option value="google">Google</option>
             <option value="github">GitHub</option>
             <option value="facebook">Facebook</option>
-          </select>
-        </div>
-
-        <div className="filter-group">
-          <label>Estado:</label>
-          <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-            <option value="todos">Todos</option>
-            <option value="active">Activas</option>
-            <option value="closed">Finalizadas</option>
           </select>
         </div>
 
