@@ -44,7 +44,9 @@ export interface SessionLog {
   userEmail: string | null;
   loginTime: Date;
   logoutTime?: Date | null;
-  sessionDuration?: number;
+  sessionDuration?: number; // en segundos
+  authMethod: 'email' | 'google' | 'github' | 'facebook';
+  status: 'active' | 'closed';
   userPhotoURL?: string | null;
 }
 

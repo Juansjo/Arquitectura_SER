@@ -332,3 +332,16 @@
     opacity: 1;
   }
 }
+
+.demo-button {
+  transition: all 0.3s ease;
+}
+
+.demo-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+}
+
+.divider {
+  margin: 20px 0;
+}
