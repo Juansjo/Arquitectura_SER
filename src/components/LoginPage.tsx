@@ -164,25 +164,7 @@ const LoginPage = () => {
 
     
     
-    // Manejo específico de errores de GitHub
-    if (error.code === 'auth/account-exists-with-different-credential') {
-      setError('Ya existe una cuenta con el mismo email pero diferente proveedor. Inicia sesión con el método que usaste originalmente.');
-    } else if (error.code === 'auth/popup-closed-by-user') {
-      setError('La ventana de autenticación fue cerrada antes de completar el proceso.');
-    } else if (error.code === 'auth/unauthorized-domain') {
-      setError('El dominio no está autorizado. Agrega localhost a los dominios autorizados en Firebase Console.');
-    } else if (error.code === 'auth/operation-not-allowed') {
-      setError('La autenticación no está habilitada. Habilítala en Firebase Console.');
-    } else if (error.code === 'auth/invalid-oauth-provider') {
-      setError('Configuración de OAuth inválida. Verifica Client ID y Client Secret.');
-    } else {
-      setError(`Error al autenticar con ${providerName}: ${error.message || error.code}`);
-    }
-  } finally {
-    setLoading(false);
-  }
-};
-
+   
   const closeModal = (): void => {
     setShowModal(false);
   };
