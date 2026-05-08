@@ -158,4 +158,4 @@ export const getAllSessions = async (): Promise<SessionLog[]> => {
     console.error('Error obteniendo sesiones:', error);
     return [];
   }
-};
+}; 
