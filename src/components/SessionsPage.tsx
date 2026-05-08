@@ -83,17 +83,7 @@ const SessionsPage = () => {
     setLoading(false);
   };
 
-  if (loading && !hasLoaded) {
-    return (
-      <div className="sessions-container">
-        <div className="loading-spinner">
-          <div className="spinner"></div>
-          <p>Cargando registros de sesiones...</p>
-        </div>
-      </div>
-    );
-  }
-
+ 
   return (
     <div className="sessions-container">
       <div className="sessions-header">
@@ -125,7 +115,14 @@ const SessionsPage = () => {
           </select>
         </div>
 
-        
+        <div className="filter-group">
+          <label>Estado:</label>
+          <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+            <option value="todos">Todos</option>
+            <option value="active">Activas</option>
+            <option value="closed">Finalizadas</option>
+          </select>
+        </div>
 
         <button onClick={handleRefresh} className="refresh-btn">
           🔄 Actualizar
