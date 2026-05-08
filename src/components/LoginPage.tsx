@@ -204,7 +204,6 @@ const LoginPage = () => {
         
         <form onSubmit={handleEmailLogin}>
           <div className="form-group">
-            <label h
             <img src="https://www.google.com/favicon.ico" alt="Google" />
             Google
           </button>
