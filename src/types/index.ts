@@ -35,3 +35,19 @@ export interface UserData {
   role?: string;
   createdAt?: Date;
 }
+
+
+export interface SessionLog {
+  id?: string;
+  userId: string;
+  userName: string | null;
+  userEmail: string | null;
+  loginTime: Date;
+  logoutTime?: Date | null;
+  sessionDuration?: number; // en segundos
+  authMethod: 'email' | 'google' | 'github' | 'facebook';
+  status: 'active' | 'closed';
+  userPhotoURL?: string | null;
+}
+
+

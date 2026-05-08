@@ -6,11 +6,23 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { User } from 'firebase/auth';
 import type { FirebaseError, ModalData } from '../types';
-import './AuthPages.css';
+import '../components/AuthPages.css'
+import { registerLogin } from '../services/sessionServices';
 
 interface LoginFormData {
   email: string;
   password: string;
+}
+export interface SessionLog {
+  id?: string;
+  userId: string;
+  userName: string | null;
+  userEmail: string | null;
+  loginTime: Date;
+  logoutTime?: Date | null;
+  sessionDuration?: number; // en segundos
+  authMethod: 'email' | 'google' | 'github' | 'facebook';
+  userPhotoURL?: string | null;
 }
 
 const LoginPage = () => {
@@ -36,30 +48,33 @@ const LoginPage = () => {
     return true;
   };
 
-  const saveUserToFirestore = async (user: User, provider: string): Promise<void> => {
+ const saveUserToFirestore = async (user: User, provider: string): Promise<void> => {
   try {
-    // Verificar si el usuario ya existe en Firestore
-    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    console.log('Guardando usuario en Firestore:', {
+      uid: user.uid,
+      displayName: user.displayName,
+      email: user.email,
+      provider: provider,
+      photoUrl: user.photoURL
+    });
     
-    if (!userDoc.exists()) {
-      // Si no existe, crearlo
-      await setDoc(doc(db, 'users', user.uid), {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        name: user.displayName,
-        photoURL: user.photoURL,
-        lastLogin: new Date(),
-        provider: provider,
-        createdAt: new Date()
-      });
-    } else {
-      // Si existe, solo actualizar lastLogin
-      await setDoc(doc(db, 'users', user.uid), {
-        lastLogin: new Date(),
-        provider: provider
-      }, { merge: true });
-    }
+    
+    const displayName = user.displayName || user.email?.split('@')[0] || 'Usuario';
+    
+    await setDoc(doc(db, 'users', user.uid), {
+      uid: user.uid,
+      email: user.email,
+      displayName: displayName,
+      photoURL: user.photoURL,
+      lastLogin: new Date(),
+      provider: provider
+    }, { merge: true });
+    
+    // REGISTRAR INICIO DE SESIÓN
+    const authMethod = provider === 'email' ? 'email' : provider.toLowerCase() as SessionLog['authMethod'];
+    await registerLogin(user, authMethod);
+    
+    console.log(' Usuario guardado correctamente');
   } catch (err) {
     console.error('Error guardando usuario:', err);
   }
@@ -81,7 +96,7 @@ const LoginPage = () => {
       );
       
       await saveUserToFirestore(userCredential.user, 'email');
-      
+    
       setModalData({
         title: '¡Bienvenido!',
         message: `Inicio de sesión exitoso`,
@@ -129,6 +144,8 @@ const LoginPage = () => {
         email: result.user.email || '',
         provider: providerName
       }
+
+  
     });
     setShowModal(true);
     
@@ -136,12 +153,16 @@ const LoginPage = () => {
       setShowModal(false);
       navigate('/');
     }, 2000);
+
+    
     
   } catch (err) {
     const error = err as FirebaseError;
     console.error('Error completo de autenticación:', error);
     console.error('Código de error:', error.code);
     console.error('Mensaje:', error.message);
+
+    
     
     // Manejo específico de errores de GitHub
     if (error.code === 'auth/account-exists-with-different-credential') {
@@ -151,7 +172,7 @@ const LoginPage = () => {
     } else if (error.code === 'auth/unauthorized-domain') {
       setError('El dominio no está autorizado. Agrega localhost a los dominios autorizados en Firebase Console.');
     } else if (error.code === 'auth/operation-not-allowed') {
-      setError('La autenticación con GitHub no está habilitada. Habilítala en Firebase Console.');
+      setError('La autenticación no está habilitada. Habilítala en Firebase Console.');
     } else if (error.code === 'auth/invalid-oauth-provider') {
       setError('Configuración de OAuth inválida. Verifica Client ID y Client Secret.');
     } else {
@@ -276,6 +297,8 @@ const LoginPage = () => {
       )}
     </div>
   );
+
 };
+
 
 export default LoginPage;

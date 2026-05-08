@@ -67,121 +67,90 @@ const RegisterPage = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+    // Limpiar error del campo cuando el usuario escribe
     if (errors[e.target.name as keyof FormErrors]) {
       setErrors({ ...errors, [e.target.name]: '' });
     }
   };
 
-  // ============================================
-  // OPCIÓN 1: REGISTRO REAL CON FIREBASE
-  // ============================================
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  e.preventDefault();
+  
+  if (!validateForm()) return;
+  
+  setLoading(true);
+  
+  try {
+    // Crear usuario en Firebase Auth
+    const userCredential = await createUserWithEmailAndPassword(
+      auth, 
+      formData.email, 
+      formData.password
+    );
     
-    if (!validateForm()) return;
+    //  Actualizar perfil con nombre
+    await updateProfile(userCredential.user, {
+      displayName: formData.name
+    });
     
-    setLoading(true);
+    // Forzar actualización del usuario actual
+    await userCredential.user.reload();
     
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth, 
-        formData.email, 
-        formData.password
-      );
-      
-      await updateProfile(userCredential.user, {
-        displayName: formData.name
-      });
-      
-      await userCredential.user.reload();
-      
-      await setDoc(doc(db, 'users', userCredential.user.uid), {
-        uid: userCredential.user.uid,
-        name: formData.name,
-        displayName: formData.name,
-        email: formData.email,
-        createdAt: new Date(),
-        role: 'user'
-      });
-      
-      setModalData({
-        title: '✅ ¡Registro Exitoso! (Firebase)',
-        message: 'Usuario registrado correctamente en Firebase',
-        userData: {
-          nombre: formData.name,
-          email: formData.email,
-          uid: userCredential.user.uid
-        }
-      });
-      setShowModal(true);
-      
-      setTimeout(() => {
-        setShowModal(false);
-        navigate('/login');
-      }, 3000);
-      
-    } catch (err) {
-      const error = err as FirebaseError;
-      console.error('Error completo:', error);
-      
-      let errorMessage = 'Error al registrar usuario';
-      
-      switch (error.code) {
-        case 'auth/email-already-in-use':
-          errorMessage = 'Este email ya está registrado';
-          break;
-        case 'auth/weak-password':
-          errorMessage = 'La contraseña es muy débil. Debe tener al menos 6 caracteres';
-          break;
-        case 'auth/invalid-email':
-          errorMessage = 'El formato del email no es válido';
-          break;
-        case 'auth/operation-not-allowed':
-          errorMessage = 'El registro con email/password no está habilitado';
-          break;
-        default:
-          errorMessage = `Error: ${error.message || 'Error desconocido'}`;
-      }
-      
-      setErrors({ submit: errorMessage });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ============================================
-  // OPCIÓN 2: REGISTRO DEMO (SIMULADO)
-  // ============================================
-  const handleDemoRegister = () => {
-    // Validar el formulario igual que en registro real
-    if (!validateForm()) return;
+    // Guardar en Firestore
+    await setDoc(doc(db, 'users', userCredential.user.uid), {
+      uid: userCredential.user.uid,
+      name: formData.name,
+      displayName: formData.name,
+      email: formData.email,
+      createdAt: new Date(),
+      role: 'user'
+    });
     
-    // Mostrar modal con datos simulados
+    // Mostrar datos registrados
     setModalData({
-      title: '🎭 DEMO - Registro Simulado',
-      message: 'Registro simulado exitosamente (sin conexión a Firebase)',
+      title: '¡Registro Exitoso!',
+      message: 'Usuario registrado correctamente',
       userData: {
         nombre: formData.name,
         email: formData.email,
-        uid: `demo_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`
+        uid: userCredential.user.uid
       }
     });
     setShowModal(true);
     
-    // Guardar en localStorage para referencia (opcional)
-    const demoUsers = JSON.parse(localStorage.getItem('demoUsers') || '[]');
-    demoUsers.push({
-      name: formData.name,
-      email: formData.email,
-      registeredAt: new Date().toISOString()
-    });
-    localStorage.setItem('demoUsers', JSON.stringify(demoUsers));
-    
+    // Redirigir después de 3 segundos
     setTimeout(() => {
-      setShowModal(false);
       navigate('/login');
     }, 3000);
-  };
+    
+  } catch (err) {
+    const error = err as FirebaseError;
+    console.error('Error completo:', error);
+    
+    let errorMessage = 'Error al registrar usuario';
+    
+    switch (error.code) {
+      case 'auth/email-already-in-use':
+        errorMessage = 'Este email ya está registrado';
+        break;
+      case 'auth/weak-password':
+        errorMessage = 'La contraseña es muy débil. Debe tener al menos 6 caracteres';
+        break;
+      case 'auth/invalid-email':
+        errorMessage = 'El formato del email no es válido';
+        break;
+      case 'auth/operation-not-allowed':
+        errorMessage = 'El registro con email/password no está habilitado';
+        break;
+      default:
+        errorMessage = `Error: ${error.message || 'Error desconocido'}`;
+    }
+    
+    setErrors({ submit: errorMessage });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const closeModal = (): void => {
     setShowModal(false);
@@ -252,40 +221,17 @@ const RegisterPage = () => {
             {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
           </div>
           
-          {/* Botón registro real con Firebase */}
           <button type="submit" disabled={loading} className="submit-button">
-            {loading ? 'Registrando...' : '✅ Registrarse (Firebase real)'}
-          </button>
-          
-          {/* Botón registro DEMO simulado */}
-          <button 
-            type="button"
-            onClick={handleDemoRegister}
-            disabled={loading}
-            className="submit-button demo-button"
-            style={{ 
-              background: 'linear-gradient(135deg, #6c757d 0%, #495057 100%)',
-              marginTop: '12px'
-            }}
-          >
-            🎭 DEMO - Simular registro (sin Firebase)
+            {loading ? 'Registrando...' : 'Registrarse'}
           </button>
         </form>
         
-        <div className="divider">
-          <span>Nota</span>
-        </div>
-        
         <div className="auth-links">
-          <p style={{ fontSize: '12px', color: '#666', textAlign: 'center' }}>
-            🔹 <strong>Opción real:</strong> Guarda el usuario en Firebase Autenticación y Firestore.<br />
-            🔸 <strong>Opción DEMO:</strong> Solo simula el registro sin conexión a Firebase.
-          </p>
           <p>¿Ya tienes cuenta? <Link to="/login">Iniciar sesión</Link></p>
         </div>
       </div>
       
-      {/* Modal compartido */}
+      {/* éxito */}
       {showModal && modalData && (
         <div className="modal-overlay">
           <div className="modal-content">
