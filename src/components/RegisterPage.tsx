@@ -97,15 +97,7 @@ const RegisterPage = () => {
     await userCredential.user.reload();
     
     // Guardar en Firestore
-    await setDoc(doc(db, 'users', userCredential.user.uid), {
-      uid: userCredential.user.uid,
-      name: formData.name,
-      displayName: formData.name, // Asegurar que guardamos displayName
-      email: formData.email,
-      createdAt: new Date(),
-      role: 'user'
-    });
-    
+   
     // Mostrar datos registrados
     setModalData({
       title: '¡Registro Exitoso!',
