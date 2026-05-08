@@ -204,6 +204,48 @@ const LoginPage = () => {
         
         <form onSubmit={handleEmailLogin}>
           <div className="form-group">
+            <label htmlFor="email">Correo electrónico</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="ejemplo@correo.com"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="password">Contraseña</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder="Ingresa tu contraseña"
+            />
+          </div>
+          
+          <div className="forgot-link">
+            <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
+          </div>
+          
+          <button type="submit" disabled={loading} className="submit-button">
+            {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+          </button>
+        </form>
+        
+        <div className="divider">
+          <span>O continúa con</span>
+        </div>
+        
+        <div className="social-buttons">
+          <button 
+            onClick={() => handleSocialLogin(googleProvider, 'Google')}
+            disabled={loading}
+            className="social-button google"
+          >
             <img src="https://www.google.com/favicon.ico" alt="Google" />
             Google
           </button>

@@ -74,5 +74,37 @@ const SessionsPage = () => {
   }
 
   return (
-  
+    <div className="sessions-container">
+      <div className="sessions-header">
+        <h2>📊 Registro de Sesiones</h2>
+        <p>Historial de ingresos a la aplicación</p>
+        <button onClick={() => window.location.href = '/'} className="back-button">
+          ← Volver al perfil
+        </button>
+      </div>
+      <div className="filters-bar">
+        <div className="search-box">
+         <button onClick={handleRefresh} className="refresh-btn">
+          🔄 Actualizar
+        </button>
+      </div>
+
+      <div className="sessions-table-wrapper">
+        <table className="sessions-table">
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Hora de entrada</th>
+              <th>Hora de salida</th>
+              <th>Duración</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
 export default SessionsPage;
