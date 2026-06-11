@@ -1,0 +1,223 @@
+.crud-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.crud-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.crud-header h2 {
+  color: #333;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.crud-header p {
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.create-button {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.create-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+.success-message {
+  background: #d4edda;
+  color: #155724;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+  border-left: 4px solid #28a745;
+}
+
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.note-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
+}
+
+.note-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.note-header h3 {
+  color: #333;
+  font-size: 1.2rem;
+  margin: 0;
+  flex: 1;
+}
+
+.note-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-btn, .delete-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.edit-btn:hover {
+  background: #e3f2fd;
+  transform: scale(1.1);
+}
+
+.delete-btn:hover {
+  background: #fee;
+  transform: scale(1.1);
+}
+
+.note-content {
+  margin-bottom: 1rem;
+}
+
+.note-content p {
+  color: #555;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.note-footer {
+  font-size: 11px;
+  color: #999;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.empty-notes {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 12px;
+  color: #666;
+}
+
+.empty-notes p:first-child {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+/* Modal CRUD */
+.modal-content-crud {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  animation: slideUp 0.3s ease;
+}
+
+.modal-content-crud h3 {
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.modal-content-crud .form-group {
+  margin-bottom: 20px;
+}
+
+.modal-content-crud label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
+}
+
+.modal-content-crud input,
+.modal-content-crud textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.modal-content-crud input:focus,
+.modal-content-crud textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.cancel-btn {
+  padding: 10px 20px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.save-btn {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
