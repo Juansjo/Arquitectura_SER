@@ -3,12 +3,14 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { auth } from './config/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import type { User } from 'firebase/auth';
+import Navbar from './components/Navbar';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import ForgotPage from './components/ForgotPage';
 import ResetPage from './components/ResetPage';
 import UserProfile from './components/UserProfile';
 import SessionsPage from './components/SessionsPage';
+import CrudPage from './components/CrudPage';
 import { registerLogout } from './services/sessionServices';
 import './App.css';
 
@@ -27,9 +29,7 @@ function App() {
   const handleLogout = async (): Promise<void> => {
     try {
       if (user) {
-        console.log('Registrando cierre de sesión para:', user.uid);
         await registerLogout(user.uid);
-        console.log('Cierre de sesión registrado');
       }
       await auth.signOut();
     } catch (error) {
@@ -47,19 +47,38 @@ function App() {
 
   return (
     <BrowserRouter>
+      {/* Mostrar Navbar solo si hay usuario autenticado */}
+      {user && <Navbar user={user} />}
+      
       <Routes>
-        {/* Rutas públicas */}
-        <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
-        <Route path="/register" element={!user ? <RegisterPage /> : <Navigate to="/" />} />
-        <Route path="/forgot-password" element={!user ? <ForgotPage /> : <Navigate to="/" />} />
-        <Route path="/reset-password" element={!user ? <ResetPage /> : <Navigate to="/" />} />
-        
-        {/* Rutas protegidas */}
-        <Route path="/" element={user ? <UserProfile user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
-        <Route path="/sessions" element={user ? <SessionsPage /> : <Navigate to="/login" />} />
-        
-        {/* Redirección por defecto */}
-        <Route path="*" element={<Navigate to={user ? "/" : "/login"} />} />
+        <Route 
+          path="/" 
+          element={user ? <UserProfile user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/login" 
+          element={!user ? <LoginPage /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/register" 
+          element={!user ? <RegisterPage /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/forgot-password" 
+          element={!user ? <ForgotPage /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/reset-password" 
+          element={!user ? <ResetPage /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/sessions" 
+          element={user ? <SessionsPage /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/crud" 
+          element={user ? <CrudPage /> : <Navigate to="/login" />} 
+        />
       </Routes>
     </BrowserRouter>
   );
