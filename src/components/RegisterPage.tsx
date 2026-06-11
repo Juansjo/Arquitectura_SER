@@ -35,32 +35,61 @@ const RegisterPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState<ModalData | null>(null);
 
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-    
-    if (!formData.name.trim()) {
-      newErrors.name = 'El nombre es obligatorio';
-    }
-    
-    if (!formData.email) {
-      newErrors.email = 'El email es obligatorio';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email no válido';
-    }
-    
-    if (!formData.password) {
-      newErrors.password = 'La contraseña es obligatoria';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
-    }
-    
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Las contraseñas no coinciden';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const validatePasswordStrength = (password: string): { isValid: boolean; errors: string[] } => {
+  const errors: string[] = [];
+  
+  if (password.length < 10) {
+    errors.push('• Mínimo 10 caracteres');
+  }
+  if (!/[A-Z]/.test(password)) {
+    errors.push('• Al menos 1 mayúscula');
+  }
+  if (!/[a-z]/.test(password)) {
+    errors.push('• Al menos 1 minúscula');
+  }
+  if (!/[0-9]/.test(password)) {
+    errors.push('• Al menos 1 número');
+  }
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+    errors.push('• Al menos 1 carácter especial (!@#$%^&*)');
+  }
+  
+  return {
+    isValid: errors.length === 0,
+    errors
   };
+};
+
+ const validateForm = (): boolean => {
+  const newErrors: FormErrors = {};
+  
+  if (!formData.name.trim()) {
+    newErrors.name = 'El nombre es obligatorio';
+  }
+  
+  if (!formData.email) {
+    newErrors.email = 'El email es obligatorio';
+  } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    newErrors.email = 'Email no válido';
+  }
+  
+  // 👇 Validación de contraseña mejorada
+  if (!formData.password) {
+    newErrors.password = 'La contraseña es obligatoria';
+  } else {
+    const passwordValidation = validatePasswordStrength(formData.password);
+    if (!passwordValidation.isValid) {
+      newErrors.password = passwordValidation.errors.join('\n');
+    }
+  }
+  
+  if (formData.password !== formData.confirmPassword) {
+    newErrors.confirmPassword = 'Las contraseñas no coinciden';
+  }
+  
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setFormData({
