@@ -13,9 +13,23 @@ import {
 } from 'firebase/firestore';
 import type { User } from 'firebase/auth';
 
+
+export interface SessionLog {
+  id?: string;
+  userId: string;
+  userName: string | null;
+  userEmail: string | null;
+  loginTime: Date;
+  logoutTime?: Date | null;
+  sessionDuration?: number;
+  authMethod: 'email' | 'google' | 'github' | 'facebook';
+  status: 'active' | 'closed';
+  userPhotoURL?: string | null;
+}
+
 const SESSIONS_COLLECTION = 'sessions';
 
-// Tipo para los datos de Firestore
+
 interface FirestoreSessionData {
   userId: string;
   userName: string | null;
@@ -34,41 +48,36 @@ export const registerLogin = async (
   authMethod: SessionLog['authMethod']
 ): Promise<string> => {
   try {
-    //CALCULAR EL NOMBRE CORRECTAMENTE
     const userName = user.displayName || user.email?.split('@')[0] || 'Usuario';
     
-    const sessionData: Omit<SessionLog, 'id'> = {
+    const sessionData = {
       userId: user.uid,
       userName: userName,
       userEmail: user.email,
-      loginTime: new Date(),
+      loginTime: Timestamp.fromDate(new Date()),
       authMethod: authMethod,
       status: 'active',
-      userPhotoURL: user.photoURL
+      userPhotoURL: user.photoURL || null
     };
 
     console.log('📝 Registrando nueva sesión:', sessionData);
     
-    const docRef = await addDoc(collection(db, SESSIONS_COLLECTION), {
-      ...sessionData,
-      loginTime: Timestamp.fromDate(sessionData.loginTime)
-    });
-    
+    const docRef = await addDoc(collection(db, SESSIONS_COLLECTION), sessionData);
     localStorage.setItem('currentSessionId', docRef.id);
     
-    console.log('Sesión registrada:', docRef.id);
+    console.log('✅ Sesión registrada:', docRef.id);
     return docRef.id;
   } catch (error) {
-    console.error('Error registrando login:', error);
+    console.error('❌ Error registrando login:', error);
     return '';
   }
 };
+
 // Registrar cierre de sesión
 export const registerLogout = async (userId: string): Promise<void> => {
   try {
     console.log('🔍 Buscando sesión activa para usuario:', userId);
     
-    // Buscar sesión activa del usuario
     const sessionsRef = collection(db, SESSIONS_COLLECTION);
     const sessionQuery = query(
       sessionsRef,
@@ -89,10 +98,6 @@ export const registerLogout = async (userId: string): Promise<void> => {
       const logoutTime = new Date();
       const sessionDuration = Math.floor((logoutTime.getTime() - loginTime.getTime()) / 1000);
       
-      console.log(' Login time:', loginTime);
-      console.log(' Logout time:', logoutTime);
-      console.log(' Duración:', sessionDuration, 'segundos');
-      
       await updateDoc(doc(db, SESSIONS_COLLECTION, sessionDoc.id), {
         logoutTime: Timestamp.fromDate(logoutTime),
         sessionDuration: sessionDuration,
@@ -100,56 +105,13 @@ export const registerLogout = async (userId: string): Promise<void> => {
       });
       
       localStorage.removeItem('currentSessionId');
-      console.log(' Sesión cerrada registrada correctamente');
+      console.log('✅ Sesión cerrada, duración:', sessionDuration, 'segundos');
     } else {
-      console.warn('No se encontró sesión activa para el usuario:', userId);
+      console.warn('⚠️ No se encontró sesión activa para el usuario:', userId);
     }
   } catch (error) {
-    console.error(' Error registrando logout:', error);
+    console.error('❌ Error registrando logout:', error);
   }
-};
-
-// Obtener historial de sesiones con filtros
-export const getSessionsHistory = async (
-  
-  _lastDoc?: unknown, // Prefijo _ para indicar que no se usa
-  pageSize: number = 10
-): Promise<{ sessions: SessionLog[]; lastVisible: unknown }> => {
- 
-    // Construir consulta base
-    const sessionsQuery = query(
-      collection(db, SESSIONS_COLLECTION),
-      orderBy('loginTime', 'desc')
-    );
-    
-    const querySnapshot = await getDocs(sessionsQuery);
-    
-    let sessions: SessionLog[] = querySnapshot.docs.map(doc => {
-      const data = doc.data() as FirestoreSessionData;
-      return {
-        id: doc.id,
-        userId: data.userId,
-        userName: data.userName,
-        userEmail: data.userEmail,
-        loginTime: data.loginTime.toDate(),
-        logoutTime: data.logoutTime?.toDate(),
-        sessionDuration: data.sessionDuration,
-        authMethod: data.authMethod as SessionLog['authMethod'],
-        status: data.status as SessionLog['status'],
-        userPhotoURL: data.userPhotoURL
-      };
-    });
-    
-    
-    
-    // Paginación
-    const paginatedSessions = sessions.slice(0, pageSize);
-    const lastVisible = sessions[pageSize] || null;
-    
-    return {
-      sessions: paginatedSessions,
-      lastVisible
-    };
 };
 
 // Obtener todas las sesiones
@@ -159,8 +121,27 @@ export const getAllSessions = async (): Promise<SessionLog[]> => {
     const sessionsQuery = query(sessionsRef, orderBy('loginTime', 'desc'));
     const querySnapshot = await getDocs(sessionsQuery);
     
-    return querySnapshot.docs.map(doc => {
+    console.log(`📊 Documentos encontrados: ${querySnapshot.size}`);
+    
+    let activeCount = 0;
+    let closedCount = 0;
+    
+    const sessions: SessionLog[] = querySnapshot.docs.map(doc => {
       const data = doc.data() as FirestoreSessionData;
+      
+      // 👇 FORZAR EL TIPO CORRECTO PARA STATUS
+      let status: 'active' | 'closed' = 'active';
+      if (data.status === 'closed') {
+        status = 'closed';
+      } else if (data.logoutTime) {
+        status = 'closed';
+      } else {
+        status = 'active';
+      }
+      
+      if (status === 'active') activeCount++;
+      if (status === 'closed') closedCount++;
+      
       return {
         id: doc.id,
         userId: data.userId,
@@ -170,9 +151,14 @@ export const getAllSessions = async (): Promise<SessionLog[]> => {
         logoutTime: data.logoutTime?.toDate(),
         sessionDuration: data.sessionDuration,
         authMethod: data.authMethod as SessionLog['authMethod'],
+        status: status,  // 👈 AHORA ES DEL TIPO CORRECTO
         userPhotoURL: data.userPhotoURL
       };
     });
+    
+    console.log(`📊 Estadísticas: Total=${sessions.length}, Activas=${activeCount}, Finalizadas=${closedCount}`);
+    
+    return sessions;
   } catch (error) {
     console.error('Error obteniendo sesiones:', error);
     return [];

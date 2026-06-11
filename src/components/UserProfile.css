@@ -5,6 +5,7 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  padding: 20px;
 }
 
 .profile-card {
@@ -12,9 +13,14 @@
   border-radius: 20px;
   padding: 40px;
   width: 100%;
-  max-width: 400px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  max-width: 450px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   text-align: center;
+}
+
+.profile-card h2 {
+  color: #333;
+  margin-bottom: 10px;
 }
 
 .profile-image {
@@ -24,56 +30,50 @@
   margin: 20px auto;
   object-fit: cover;
   border: 3px solid #667eea;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.profile-image-placeholder {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 20px auto;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  color: white;
+  border: 3px solid white;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
 }
 
 .user-info {
   text-align: left;
   margin: 20px 0;
-  padding: 15px;
+  padding: 20px;
   background: #f8f9fa;
-  border-radius: 10px;
+  border-radius: 16px;
 }
 
 .user-info p {
   margin: 10px 0;
   color: #333;
   word-break: break-all;
+  font-size: 14px;
 }
 
 .user-info strong {
   color: #667eea;
+  display: inline-block;
+  width: 70px;
 }
 
-.logout-button {
-  background: #dc3545;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 100%;
-}
-
-.logout-button:hover {
-  background: #c82333;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(220, 53, 69, 0.3);
-}
-
-.loading-spinner {
-  text-align: center;
-  color: #667eea;
-  font-size: 16px;
-  padding: 20px;
-}
-
+/* Botón de sesiones */
 .sessions-button {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 14px 24px;
+  padding: 12px 20px;
   border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
@@ -94,17 +94,100 @@
   box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
 }
 
-.profile-image-placeholder {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin: 20px auto;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* Botón de cerrar sesión */
+.logout-button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.logout-button:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(220, 53, 69, 0.3);
+}
+
+/*
+   SECCIÓN DE VINCULACIÓN
+   */
+/* Botones de vinculación - Estilos completos */
+.link-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.link-btn-social {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 40px;
-  color: white;
-  border: 3px solid white;
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  font-family: inherit;
+  color: #333 !important;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.link-btn-social img {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+
+.link-btn-social span {
+  color: #333; 
+}
+
+.link-btn-social:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.link-btn-social.google:hover {
+  border-color: #db4437;
+  color: #db4437;
+}
+
+.link-btn-social.google:hover span {
+  color: #db4437;
+}
+
+.link-btn-social.github:hover {
+  border-color: #333;
+  color: #333;
+}
+
+.link-btn-social.github:hover span {
+  color: #333;
+}
+
+.link-btn-social.facebook:hover {
+  border-color: #1877f2;
+  color: #1877f2;
+}
+
+.link-btn-social.facebook:hover span {
+  color: #1877f2;
+}
+
+.link-btn-social:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

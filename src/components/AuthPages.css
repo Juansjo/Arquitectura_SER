@@ -154,9 +154,9 @@
   font-size: 14px;
 }
 
-/* ============================================
+/*
    BOTONES SOCIALES - SOLO LOGOS ALINEADOS
-   ============================================ */
+   */
 .social-buttons {
   display: flex;
   flex-direction: row;
@@ -331,4 +331,25 @@
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+.demo-button {
+  transition: all 0.3s ease;
+}
+
+.demo-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+}
+
+.divider {
+  margin: 20px 0;
+}
+
+.error-text {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+  white-space: pre-line;  /* 👈 Permite saltos de línea */
 }

@@ -16,8 +16,33 @@ const ResetPage = () => {
   const [modalData, setModalData] = useState<ModalData | null>(null);
   const [oobCode, setOobCode] = useState('');
 
+  // Validación de fortaleza de contraseña (mismos requisitos que RegisterPage)
+  const validatePasswordStrength = (pwd: string): { isValid: boolean; errors: string[] } => {
+    const errorsList: string[] = [];
+    
+    if (pwd.length < 10) {
+      errorsList.push('• Mínimo 10 caracteres');
+    }
+    if (!/[A-Z]/.test(pwd)) {
+      errorsList.push('• Al menos 1 mayúscula');
+    }
+    if (!/[a-z]/.test(pwd)) {
+      errorsList.push('• Al menos 1 minúscula');
+    }
+    if (!/[0-9]/.test(pwd)) {
+      errorsList.push('• Al menos 1 número');
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) {
+      errorsList.push('• Al menos 1 carácter especial (!@#$%^&*)');
+    }
+    
+    return {
+      isValid: errorsList.length === 0,
+      errors: errorsList
+    };
+  };
+
   useEffect(() => {
-    // Obtener el código de verificación de la URL
     const code = searchParams.get('oobCode');
     if (code) {
       setOobCode(code);
@@ -31,14 +56,18 @@ const ResetPage = () => {
       setError('La contraseña es obligatoria');
       return false;
     }
-    if (password.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres');
+    
+    const passwordValidation = validatePasswordStrength(password);
+    if (!passwordValidation.isValid) {
+      setError(passwordValidation.errors.join('\n'));
       return false;
     }
+    
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
       return false;
     }
+    
     return true;
   };
 
@@ -58,14 +87,14 @@ const ResetPage = () => {
       await confirmPasswordReset(auth, oobCode, password);
       
       setModalData({
-        title: 'Contraseña Restablecida',
+        title: '✅ Contraseña Restablecida',
         message: 'Tu contraseña ha sido actualizada exitosamente',
-        instructions: 'Ahora puedes iniciar sesión con tu nueva contraseña.'
+        instructions: 'Ahora puedes iniciar sesión con tu nueva contraseña. Recuerda que debe cumplir con los requisitos de seguridad.'
       });
       setShowModal(true);
       
-      // Redirigir después de 3 segundos
       setTimeout(() => {
+        setShowModal(false);
         navigate('/login');
       }, 3000);
       
@@ -75,6 +104,8 @@ const ResetPage = () => {
         setError('El enlace ha expirado. Solicita un nuevo restablecimiento.');
       } else if (error.code === 'auth/invalid-action-code') {
         setError('El enlace es inválido. Solicita un nuevo restablecimiento.');
+      } else if (error.code === 'auth/weak-password') {
+        setError('La contraseña es muy débil. Debe cumplir con los requisitos de seguridad.');
       } else {
         setError('Error al restablecer la contraseña. Intenta nuevamente.');
       }
@@ -103,7 +134,7 @@ const ResetPage = () => {
         <h2>Restablecer Contraseña</h2>
         <p>Ingresa tu nueva contraseña</p>
         
-        {error && <div className="error-message">{error}</div>}
+        {error && <div className="error-message" style={{ whiteSpace: 'pre-line' }}>{error}</div>}
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -116,7 +147,7 @@ const ResetPage = () => {
                 setPassword(e.target.value);
                 setError('');
               }}
-              placeholder="Mínimo 6 caracteres"
+              placeholder="Mínimo 10 caracteres, mayúscula, minúscula, número y especial"
             />
           </div>
           
@@ -144,7 +175,6 @@ const ResetPage = () => {
         </div>
       </div>
       
-      {/* Modal de éxito */}
       {showModal && modalData && (
         <div className="modal-overlay">
           <div className="modal-content">
